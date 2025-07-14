@@ -1,4 +1,4 @@
-resource aws_dynamodb_table "url_shortener_table" {
+resource "aws_dynamodb_table" "url_shortener_table" {
   name         = var.dynamodb_table_name
   billing_mode = "PAY_PER_REQUEST"
 
@@ -11,6 +11,6 @@ resource aws_dynamodb_table "url_shortener_table" {
 
   tags = {
     Name        = var.dynamodb_table_name
-    Environment = "Development" 
+    Environment = "Development"
   }
 }

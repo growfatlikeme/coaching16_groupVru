@@ -4,3 +4,10 @@ variable "dynamodb_table_name" {
   default     = "url_shortener_table"
 
 }
+
+variable "domain_name" {
+  description = "The domain name for the URL shortener service."
+  type        = string
+  default     = "groupVru.sctp-sandbox.com"
+
+}

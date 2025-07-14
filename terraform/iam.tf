@@ -29,7 +29,7 @@ resource "aws_iam_policy" "lambda_exec_role" {
                 "dynamodb:UpdateItem",
                 "dynamodb:GetItem"
             ],
-            "Resource": "${aws_dynamodb_table.table.arn}"
+            "Resource": "${aws_dynamodb_table.url_shortener_table.arn}"
         },
         {
             "Effect": "Allow",

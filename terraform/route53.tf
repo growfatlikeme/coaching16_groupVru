@@ -1,32 +1,24 @@
-# Route53 data source for the hosted zone
-data "aws_route53_zone" "main" {
-  name         = "sctp-sandbox.com"
-  private_zone = false
-}
-
-# Custom domain name for API Gateway
-resource "aws_apigatewayv2_domain_name" "api" {
-  domain_name = "groupVru.sctp-sandbox.com"
-
-  domain_name_configuration {
-    certificate_arn = aws_acm_certificate_validation.cert_validation.certificate_arn
-    endpoint_type   = "REGIONAL"
-    security_policy = "TLS_1_2"
+# Custom domain name for REST API Gateway
+resource "aws_api_gateway_domain_name" "api" {
+  domain_name     = var.domain_name
+  certificate_arn = aws_acm_certificate_validation.cert_validation.certificate_arn
+  endpoint_configuration {
+    types = ["REGIONAL"]
   }
 }
 
 /*  to map after creating the API Gateway
 # API mapping to connect the API to the custom domain
-resource "aws_apigatewayv2_api_mapping" "api" {
-  api_id      = aws_apigatewayv2_api.http_api.id
-  domain_name = aws_apigatewayv2_domain_name.api.id
-  stage       = aws_apigatewayv2_stage.default.id
+resource "aws_api_gateway_base_path_mapping" "api" {
+  api_id      = aws_api_gateway_rest_api.api.id
+  stage_name  = aws_api_gateway_deployment.api.stage_name
+  domain_name = aws_api_gateway_domain_name.api.domain_name
 }
 */
 
 # ACM Certificate for the domain
 resource "aws_acm_certificate" "cert" {
-  domain_name       = "groupVru.sctp-sandbox.com"
+  domain_name       = var.domain_name
   validation_method = "DNS"
 
   lifecycle {
@@ -60,12 +52,12 @@ resource "aws_acm_certificate_validation" "cert_validation" {
 # Route53 A record for the API Gateway
 resource "aws_route53_record" "api" {
   zone_id = data.aws_route53_zone.main.zone_id
-  name    = "groupVru.sctp-sandbox.com"
+  name    = var.domain_name
   type    = "A"
 
   alias {
-    name                   = aws_apigatewayv2_domain_name.api.domain_name_configuration[0].target_domain_name
-    zone_id                = aws_apigatewayv2_domain_name.api.domain_name_configuration[0].hosted_zone_id
+    name                   = aws_api_gateway_domain_name.api.regional_domain_name
+    zone_id                = aws_api_gateway_domain_name.api.regional_zone_id
     evaluate_target_health = false
   }
 }

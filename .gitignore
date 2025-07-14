@@ -1,6 +1,9 @@
 # Local .terraform directories
 .terraform/
-.tererraform.lock.hcl
+*.terraform.lock.hcl
+
+#ignore Terraform zip files
+*.zip
 
 # .tfstate files
 *.tfstate

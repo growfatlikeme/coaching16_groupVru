@@ -1,3 +1,7 @@
+# Terraform configuration for AWS provider
+# Contributed by: Vrushali Bavare and Estee
+# Created on : 14/07/2025
+# Last updated: 16/07/2025
 terraform {
   required_providers {
     aws = {
